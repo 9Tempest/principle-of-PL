@@ -73,6 +73,7 @@ Object subclass: Node [
     reduce: block [
         |r lst i|
         left == nil ifTrue: [ r := val. ] ifFalse: [r := block value: (left reduce: block) value: val.].
+        right == nil ifTrue: [^r].
         lst := OrderedCollection new.
         right do: [ :a | lst add: a ].
         i := 1.
