@@ -1,0 +1,19 @@
+class Main extends Object {
+    main() {
+        print (new Fib(10)).fib()
+    }
+}
+
+class Fib extends Object {
+    v;
+
+    fib() {
+        if (this.v = 0) (
+            0
+        ) else if (this.v = 1) (
+            1
+        ) else (
+            (new Fib(this.v + -1).fib()) + (new Fib(this.v + -2).fib())
+        )
+    }
+}

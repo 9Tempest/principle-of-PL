@@ -1,0 +1,15 @@
+class Main extends Object {
+    main() {
+        print (1+1)
+    }
+}
+
+class Factorial extends Object {
+    value;
+
+    factorial() {
+        if (this.value > 0) (
+            (new Factorial(this.value + -1)).factorial() * this.value
+        ) else 1
+    }
+}

@@ -1,0 +1,34 @@
+class Main extends Object {
+    main() {
+        spawn FacProc(ch) .
+        send ch(5) .
+        receive ch(res) .
+        print res
+    }
+}
+
+class Process extends Object {
+    ch;
+
+    main() {
+        this.go(this.ch)
+    }
+}
+
+class FacProc extends Process {
+    go(ch) {
+        receive ch(ct) .
+        if (ct > 0) (
+            // Let another FacProc do the rest of the work
+            spawn FacProc(next) .
+            send next(ct + -1) .
+            receive next(res) .
+            send ch(ct * res) .
+            0
+        ) else (
+            // Just send back that 0! = 1
+            send ch(1) .
+            0
+        )
+    }
+}

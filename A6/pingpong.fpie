@@ -1,0 +1,69 @@
+class Main extends Object {
+    main() {
+        this.multiSpawn(3)
+    }
+
+    multiSpawn(ct) {
+        if (ct > 0) (
+            spawn PingPonger(x) .
+            send x(3) .
+            this.multiSpawn(ct + -1)
+        ) else 0
+    }
+}
+
+class Process extends Object {
+    ch;
+
+    main() {
+        this.go(this.ch)
+    }
+}
+
+class PingPonger extends Process {
+    go(ch) {
+        // Main will send us a count
+        receive ch(ct) .
+        spawn Ponger(pongc) .
+        spawn Pinger(pingc) .
+        send pingc(pongc) .
+        send pingc(ct) .
+        0
+    }
+}
+
+class Ponger extends Process {
+    go(ch) {
+        // Await pings
+        receive ch(ct) .
+        this.pong(print ct, ch)
+    }
+
+    ping(pongc, ct) {
+        if (ct > 0) (
+            send pongc(ct) .
+            receive pongc(x) .
+            this.ping(pongc, ct + -1)
+        ) else (
+            send pongc(ct) .
+            0
+        )
+    }
+
+    pong(ct, ch) {
+        send ch(ct) .
+        this.go(ch)
+    }
+}
+
+class Pinger extends Ponger {
+    go(ch) {
+        // Main will send us the ponger's channel
+        receive ch(pongc) .
+
+        // And the count
+        receive ch(ct) .
+
+        this.ping(pongc, ct)
+    }
+}

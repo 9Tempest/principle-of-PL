@@ -1,0 +1,75 @@
+class Main extends Object {
+    main() {
+        spawn Ref(a) .
+        spawn Ref(b) .
+        send a(0) .
+        send b(1) .
+        (new Fib(a, b)).fib(42)
+    }
+}
+
+class Ref extends Object {
+    ch;
+
+    main() {
+        this.go(this.ch)
+    }
+
+    go(ch) {
+        // First receive the initial value
+        receive ch(val) .
+        this.ref(this.ch, val)
+    }
+
+    ref(ch, val) {
+        // Prepare for commands
+        receive ch(cmd) .
+        if (cmd = 0) (
+            // Terminate
+            0
+        ) else if (cmd = 1) (
+            // Read
+            send ch(val) .
+            this.ref(this.ch, val)
+
+        ) else (
+            // Write
+            receive ch(val) .
+            this.ref(this.ch, val)
+
+        )
+    }
+}
+
+class Fib extends Object {
+    a;
+    b;
+
+    fib(to) {
+        this.fibUpTo(this.a, this.b, 1, to)
+    }
+
+    fibUpTo(a, b, from, to) {
+        if (from = to) (
+            // Finished
+            send b(1) .
+            receive b(x) .
+            send a(0) .
+            send b(0) .
+            print x
+
+        ) else (
+            // Take a step
+            send a(1) .
+            send b(1) .
+            receive a(av) .
+            receive b(bv) .
+            send a(2) .
+            send a(bv) .
+            send b(2) .
+            send b(av + bv) .
+            this.fibUpTo(a, b, from + 1, to)
+
+        )
+    }
+}
